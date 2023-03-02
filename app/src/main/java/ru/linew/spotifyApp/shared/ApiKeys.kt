@@ -1,0 +1,5 @@
+package ru.linew.spotifyApp.shared
+
+object ApiKeys {
+    const val API_KEY = " Bearer BQB87A9nNHFlwMT6kPzsGf7PJFE8B8O_utUwfXve-3nD-LERrGsV3Sdi3sMRxAgM_vkFMPAkh4FpRS18u9oHGNQfxvRKZkXWU_mEbzjmccSv1cEGkmepcxGOSURR-Egwo8geY_Z6NP_FPDgJ7KuNvm0Q_N7qA3FTogGZRoK0MiJgN8uw2iT9fYPPBLlKNcGDhPIP"
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/tracksListFragment">
+
+    <fragment
+        android:id="@+id/tracksListFragment"
+        android:name="ru.linew.spotifyApp.ui.feature.tracks.TracksListFragment"
+        android:label="TracksListFragment" />
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="ru.linew.spotifyApp.ui.feature.search.SearchFragment"
+        android:label="SearchFragment" />
+</navigation>
