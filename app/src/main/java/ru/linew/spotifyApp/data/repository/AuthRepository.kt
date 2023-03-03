@@ -20,7 +20,7 @@ class AuthRepository @Inject constructor(
                 return@map it
             }
         } else{
-            Single.just(sharedPreferencesDataSource.getToken())
+           Single.just(sharedPreferencesDataSource.getToken())
         }
         }
     }

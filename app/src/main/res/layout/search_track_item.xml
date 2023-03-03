@@ -6,34 +6,39 @@
     android:padding="8dp">
 
     <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iconImageView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
-        android:src="@drawable/test"
-        android:minWidth="100dp" />
+        android:minWidth="100dp"
+        android:src="@drawable/test" />
 
     <LinearLayout
-        android:gravity="start"
-        android:layout_marginStart="8dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="16dp"
+        android:gravity="start"
         android:orientation="vertical">
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/nameTextView"
             style="@style/TextAppearance.Material3.TitleLarge"
-            android:gravity="center||start"
-            android:text="@string/testTitle"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:gravity="start"
+            android:lines="1"
+            android:text="@string/testTitle" />
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/artistTextView"
             style="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:gravity="start||center"
-            android:text="@string/testArtist"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:gravity="start"
+            android:lines="1"
+            android:text="@string/testArtist" />
 
 
     </LinearLayout>

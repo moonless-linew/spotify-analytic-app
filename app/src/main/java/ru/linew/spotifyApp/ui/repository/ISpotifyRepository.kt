@@ -1,10 +1,10 @@
 package ru.linew.spotifyApp.ui.repository
 
-import io.reactivex.rxjava3.core.Single
+import androidx.paging.PagingData
+import io.reactivex.rxjava3.core.Flowable
 import ru.linew.spotifyApp.ui.models.Track
 
 
 interface ISpotifyRepository {
-//    fun getTrack(uid: String): Single<Track>
-    fun searchTracks(searchString: String): Single<List<Track>>
+    fun searchTracks(searchString: String): Flowable<PagingData<Track>>
 }
