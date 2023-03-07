@@ -2,14 +2,10 @@ package ru.linew.spotifyApp.ui.feature.search
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.google.android.material.circularreveal.CircularRevealHelper.Strategy
 import com.jakewharton.rxbinding4.widget.textChanges
-import io.reactivex.rxjava3.core.BackpressureStrategy
-import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import ru.linew.spotifyApp.R
 import ru.linew.spotifyApp.databinding.FragmentSearchBinding
@@ -54,18 +50,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 .subscribe {
                     viewModel.searchTracks(it.toString())
                 })
-//        disposeBag.add(
-//            binding.searchInput.editText!!.textChanges()
-//                .skipInitialValue()
-//                .debounce(1000, TimeUnit.MILLISECONDS)
-//                .filter { it.isNotEmpty() }
-//                .toFlowable(BackpressureStrategy.LATEST)
-//                .flatMap {
-//                    viewModel.tempSearchTracks(it.toString())
-//                }
-//                .subscribe {
-//                    adapter.submitData(lifecycle, it)
-//                })
 
     }
 
@@ -75,17 +59,18 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 is SearchPageStatus.Error -> {
                     showErrorToast("Internet error")
                 }
-                SearchPageStatus.Loading -> {
-
-                }
                 is SearchPageStatus.Success -> {
                     adapter.submitData(lifecycle = lifecycle, it.data)
                 }
+                else -> {} //nothing
             }
         }
     }
 
-
+    override fun onDetach() {
+        viewModel.clearPagingData()
+        super.onDetach()
+    }
 }
 
 
