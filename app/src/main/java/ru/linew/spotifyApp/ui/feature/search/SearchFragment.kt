@@ -5,15 +5,17 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.paging.map
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.google.android.material.circularreveal.CircularRevealHelper.Strategy
 import com.jakewharton.rxbinding4.widget.textChanges
 import io.reactivex.rxjava3.core.BackpressureStrategy
+import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import ru.linew.spotifyApp.R
 import ru.linew.spotifyApp.databinding.FragmentSearchBinding
 import ru.linew.spotifyApp.di.appComponent
-import ru.linew.spotifyApp.ui.models.status.SearchResultStatus
+import ru.linew.spotifyApp.di.showErrorToast
+import ru.linew.spotifyApp.ui.models.status.SearchPageStatus
 import java.util.concurrent.TimeUnit
 
 class SearchFragment : Fragment(R.layout.fragment_search) {
@@ -27,35 +29,65 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private lateinit var adapter: PagingTracksAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setupPageStatusObserver()
         setupSearchRecyclerView()
         setupSearchEditText()
         super.onViewCreated(view, savedInstanceState)
     }
+
     override fun onDestroy() {
         disposeBag.dispose()
         super.onDestroy()
     }
+
     private fun setupSearchRecyclerView() {
         adapter = PagingTracksAdapter()
         binding.searchResultList.adapter = adapter
     }
-    private fun setupSearchEditText(){
+
+    private fun setupSearchEditText() {
         disposeBag.add(
             binding.searchInput.editText!!.textChanges()
                 .skipInitialValue()
                 .debounce(1000, TimeUnit.MILLISECONDS)
-                .toFlowable(BackpressureStrategy.LATEST)
                 .filter { it.isNotEmpty() }
-                .flatMap {
-                        return@flatMap viewModel.searchTracks(it.toString())
-                    }
                 .subscribe {
-                    adapter.submitData(lifecycle = lifecycle, it)
+                    viewModel.searchTracks(it.toString())
                 })
+//        disposeBag.add(
+//            binding.searchInput.editText!!.textChanges()
+//                .skipInitialValue()
+//                .debounce(1000, TimeUnit.MILLISECONDS)
+//                .filter { it.isNotEmpty() }
+//                .toFlowable(BackpressureStrategy.LATEST)
+//                .flatMap {
+//                    viewModel.tempSearchTracks(it.toString())
+//                }
+//                .subscribe {
+//                    adapter.submitData(lifecycle, it)
+//                })
+
+    }
+
+    private fun setupPageStatusObserver() {
+        viewModel.searchPageStatus.observe(viewLifecycleOwner) {
+            when (it) {
+                is SearchPageStatus.Error -> {
+                    showErrorToast("Internet error")
+                }
+                SearchPageStatus.Loading -> {
+
+                }
+                is SearchPageStatus.Success -> {
+                    adapter.submitData(lifecycle = lifecycle, it.data)
+                }
+            }
+        }
     }
 
 
+}
 
-    }
+
 
 

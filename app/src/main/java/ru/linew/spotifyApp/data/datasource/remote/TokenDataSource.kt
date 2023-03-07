@@ -6,7 +6,7 @@ import ru.linew.spotifyApp.data.models.auth.Token
 import ru.linew.spotifyApp.data.repository.datasource.remote.IAuthDataSource
 import javax.inject.Inject
 
-class AuthDataSource @Inject constructor(private val authService: AuthService): IAuthDataSource {
+class TokenDataSource @Inject constructor(private val authService: AuthService): IAuthDataSource {
     override fun requestToken(): Single<Token> {
         return authService.getToken()
     }

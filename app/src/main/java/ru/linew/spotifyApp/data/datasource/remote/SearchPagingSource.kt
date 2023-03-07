@@ -7,10 +7,11 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
-import ru.linew.spotifyApp.data.retrofit.SpotifyService
 import ru.linew.spotifyApp.data.models.auth.Token
 import ru.linew.spotifyApp.data.models.core.SearchResponse
 import ru.linew.spotifyApp.data.models.core.Track
+import ru.linew.spotifyApp.data.retrofit.SpotifyService
+import ru.linew.spotifyApp.data.utils.PagingConfigValues
 
 class SearchPagingSource @AssistedInject constructor(
     private val spotifyService: SpotifyService,
@@ -45,8 +46,8 @@ class SearchPagingSource @AssistedInject constructor(
     private fun toLoadResult(data: SearchResponse, offset: Int): LoadResult<Int, Track>{
         return LoadResult.Page(
             data = data.items,
-            prevKey = if (offset < 20) null else offset - 20,
-            nextKey = if (offset + 20 >= data.total) null else offset + 20
+            prevKey = if (offset < PagingConfigValues.LIMIT) null else offset - PagingConfigValues.LIMIT,
+            nextKey = if (offset + PagingConfigValues.LIMIT >= data.total) null else offset + PagingConfigValues.LIMIT
         )
     }
 }

@@ -11,6 +11,5 @@ class MainFlowFragment: ParentFlowFragment(R.layout.fragment_main, R.id.fragment
 
     override fun setupNavigation(navController: NavController) {
         binding.bottomSheet.setupWithNavController(navController)
-
     }
 }

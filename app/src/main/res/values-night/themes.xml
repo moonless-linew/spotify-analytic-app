@@ -12,5 +12,6 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/background</item>
         <!-- Customize your theme here. -->
+        <item name="preferenceIconColor">@color/white</item>
     </style>
 </resources>

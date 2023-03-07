@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <PreferenceCategory
+        android:title="Appearance"
+        android:singleLineTitle="true">
+        <ListPreference
+            android:key="theme"
+            android:entries="@array/themeList"
+            android:entryValues="@array/themeList"
+            android:title="Theme"
+            android:icon="@drawable/baseline_colorize_24"
+            android:summary="Light/Dark"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Database"
+        android:singleLineTitle="true">
+        <Preference
+            android:key="import"
+            android:title="Import tracks database"
+            android:icon="@drawable/database_24"
+            android:summary="Import .csv file"
+            />
+        <Preference
+            android:key="export"
+            app:title="Export tracks database"
+            android:icon="@drawable/baseline_share_24"
+            android:summary="Export .csv file"
+            />
+    </PreferenceCategory>
+</PreferenceScreen>

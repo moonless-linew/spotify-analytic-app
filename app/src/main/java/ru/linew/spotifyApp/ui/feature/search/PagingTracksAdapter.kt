@@ -19,8 +19,6 @@ class PagingTracksAdapter : PagingDataAdapter<Track, PagingTracksAdapter.TrackVi
             )
         )
     }
-
-
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         getItem(position)?.let {
             holder.bind(it)

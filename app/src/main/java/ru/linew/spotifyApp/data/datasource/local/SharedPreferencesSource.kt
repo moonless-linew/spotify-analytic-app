@@ -6,7 +6,7 @@ import ru.linew.spotifyApp.data.repository.datasource.local.ISharedPreferencesDa
 import ru.linew.spotifyApp.data.utils.SharedPreferencesKeys
 import javax.inject.Inject
 
-class SharedPreferencesDataSource @Inject constructor(private val sharedPreferences: SharedPreferences) :
+class SharedPreferencesSource @Inject constructor(private val sharedPreferences: SharedPreferences) :
     ISharedPreferencesDataSource {
     override fun getToken(): Token {
         return Token(
