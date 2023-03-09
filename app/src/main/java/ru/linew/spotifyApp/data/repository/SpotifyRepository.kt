@@ -4,18 +4,22 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import androidx.paging.rxjava3.flowable
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Single
+import ru.linew.spotifyApp.data.datasource.local.DataBaseDataSource
 import ru.linew.spotifyApp.data.datasource.remote.SearchPagingSource
 import ru.linew.spotifyApp.data.mappers.TrackMapper
 import ru.linew.spotifyApp.data.utils.PagingConfigValues
-import ru.linew.spotifyApp.ui.models.Track
+import ru.linew.spotifyApp.ui.models.core.Track
 import ru.linew.spotifyApp.ui.repository.ISpotifyRepository
 import javax.inject.Inject
 
 
 class SpotifyRepository @Inject constructor(
     private val searchPagingSourceFactory: SearchPagingSource.SearchPagingSourceFactory,
-    private val tokenRepository: ITokenRepository
+    private val tokenRepository: ITokenRepository,
+    private val dataBaseDataSource: DataBaseDataSource
 ) :
     ISpotifyRepository {
 
@@ -44,6 +48,24 @@ class SpotifyRepository @Inject constructor(
                 it.map { track ->
                     TrackMapper.transform(track)
                 }
+            }
+    }
+    override fun saveTrack(track: Track): Completable {
+        return dataBaseDataSource.insertTrack(
+            ru.linew.spotifyApp.data.models.room.Track(
+                track.id,
+                track.name,
+                track.artist,
+                track.imageUrl
+            )
+        )
+    }
+
+    override fun loadTracks(): Single<List<Track>> {
+        val tracks = dataBaseDataSource.getAllTracks()
+        return tracks
+            .map {
+                it.map { item -> Track(item.id, item.name, item.artist, item.imageUrl) }
             }
     }
 

@@ -1,4 +1,4 @@
-package ru.linew.spotifyApp.data.models.core
+package ru.linew.spotifyApp.data.models.retrofit.core
 
 data class SearchResponse(
     val href: String,

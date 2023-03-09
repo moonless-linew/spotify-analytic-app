@@ -6,9 +6,10 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import ru.linew.spotifyApp.databinding.SearchTrackItemBinding
-import ru.linew.spotifyApp.ui.models.Track
+import ru.linew.spotifyApp.ui.models.core.Track
 
-class PagingTracksAdapter : PagingDataAdapter<Track, PagingTracksAdapter.TrackViewHolder>(TrackItemCallback()) {
+class PagingSearchAdapter(private val clickCallback: (Track) -> Unit) :
+    PagingDataAdapter<Track, PagingSearchAdapter.TrackViewHolder>(SearchItemCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         return TrackViewHolder(
@@ -19,21 +20,25 @@ class PagingTracksAdapter : PagingDataAdapter<Track, PagingTracksAdapter.TrackVi
             )
         )
     }
+
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         getItem(position)?.let {
-            holder.bind(it)
+            holder.bind(it, clickCallback)
         }
     }
 
 
     class TrackViewHolder(private val binding: SearchTrackItemBinding) : ViewHolder(binding.root) {
-        fun bind(track: Track) {
+        fun bind(track: Track, clickCallback: (Track) -> Unit) {
             with(binding) {
                 Glide.with(binding.root)
                     .load(track.imageUrl)
                     .into(binding.iconImageView)
                 nameTextView.text = track.name
                 artistTextView.text = track.artist
+                addTrackButton.setOnClickListener {
+                    clickCallback(track)
+                }
             }
         }
 

@@ -1,7 +1,7 @@
 package ru.linew.spotifyApp.data.datasource.local
 
 import android.content.SharedPreferences
-import ru.linew.spotifyApp.data.models.auth.Token
+import ru.linew.spotifyApp.data.models.retrofit.auth.Token
 import ru.linew.spotifyApp.data.repository.datasource.local.ISharedPreferencesDataSource
 import ru.linew.spotifyApp.data.utils.SharedPreferencesKeys
 import javax.inject.Inject

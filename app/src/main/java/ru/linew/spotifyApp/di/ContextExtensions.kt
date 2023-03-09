@@ -13,4 +13,7 @@ get() = when(this){
 }
 fun Fragment.showErrorToast(msg: String) {
     Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+
 }
+fun Fragment.showMessageToast(msg: String) {
+    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()}

@@ -3,7 +3,10 @@ package ru.linew.spotifyApp.ui.feature.search
 import androidx.lifecycle.*
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
+import ru.linew.spotifyApp.ui.models.core.Track
 import ru.linew.spotifyApp.ui.models.status.SearchPageStatus
 import ru.linew.spotifyApp.ui.repository.ISpotifyRepository
 
@@ -47,8 +50,16 @@ class SearchViewModel @AssistedInject constructor(
         _searchPageStatus.postValue(SearchPageStatus.Null)
     }
 
+    fun addTrack(track: Track){
+        spotifyRepository.saveTrack(track)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
+    }
+
     override fun onCleared() {
         disposeBag.dispose()
         super.onCleared()
     }
+
 }

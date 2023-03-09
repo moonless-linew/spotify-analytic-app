@@ -1,4 +1,4 @@
-package ru.linew.spotifyApp.data.models.auth
+package ru.linew.spotifyApp.data.models.retrofit.auth
 
 data class Token(
     val access_token: String,

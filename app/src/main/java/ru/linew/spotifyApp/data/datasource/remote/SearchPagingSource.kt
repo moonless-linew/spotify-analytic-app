@@ -7,9 +7,9 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
-import ru.linew.spotifyApp.data.models.auth.Token
-import ru.linew.spotifyApp.data.models.core.SearchResponse
-import ru.linew.spotifyApp.data.models.core.Track
+import ru.linew.spotifyApp.data.models.retrofit.auth.Token
+import ru.linew.spotifyApp.data.models.retrofit.core.SearchResponse
+import ru.linew.spotifyApp.data.models.retrofit.core.Track
 import ru.linew.spotifyApp.data.retrofit.SpotifyService
 import ru.linew.spotifyApp.data.utils.PagingConfigValues
 

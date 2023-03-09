@@ -1,7 +1,7 @@
 package ru.linew.spotifyApp.ui.models.status
 
 import androidx.paging.PagingData
-import ru.linew.spotifyApp.ui.models.Track
+import ru.linew.spotifyApp.ui.models.core.Track
 
 sealed class SearchPageStatus {
     object Null: SearchPageStatus()

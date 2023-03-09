@@ -20,6 +20,9 @@
             android:hint="@string/start_typing"/>
     </com.google.android.material.textfield.TextInputLayout>
 
+
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searchResultList"
         android:layout_width="match_parent"

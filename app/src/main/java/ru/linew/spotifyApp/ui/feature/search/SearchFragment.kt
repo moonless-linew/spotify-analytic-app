@@ -11,6 +11,8 @@ import ru.linew.spotifyApp.R
 import ru.linew.spotifyApp.databinding.FragmentSearchBinding
 import ru.linew.spotifyApp.di.appComponent
 import ru.linew.spotifyApp.di.showErrorToast
+import ru.linew.spotifyApp.di.showMessageToast
+import ru.linew.spotifyApp.ui.models.core.Track
 import ru.linew.spotifyApp.ui.models.status.SearchPageStatus
 import java.util.concurrent.TimeUnit
 
@@ -22,7 +24,11 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             requireActivity().appComponent.viewModelSearch()
         )
     }
-    private lateinit var adapter: PagingTracksAdapter
+    private lateinit var adapter: PagingSearchAdapter
+    private val itemClickCallback: (Track) -> Unit = {
+        showMessageToast("Added")
+        viewModel.addTrack(it)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupPageStatusObserver()
@@ -37,8 +43,9 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     }
 
     private fun setupSearchRecyclerView() {
-        adapter = PagingTracksAdapter()
+        adapter = PagingSearchAdapter(itemClickCallback)
         binding.searchResultList.adapter = adapter
+        binding.searchResultList.setHasFixedSize(true)
     }
 
     private fun setupSearchEditText() {

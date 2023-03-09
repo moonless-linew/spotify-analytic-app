@@ -1,4 +1,4 @@
-package ru.linew.spotifyApp.ui.models
+package ru.linew.spotifyApp.ui.models.core
 
 data class Track(
     val id: String,
