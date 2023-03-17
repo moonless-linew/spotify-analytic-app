@@ -7,13 +7,13 @@ import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.linew.spotifyApp.R
 import ru.linew.spotifyApp.databinding.FragmentTracksBinding
-import ru.linew.spotifyApp.di.appComponent
-import ru.linew.spotifyApp.di.showErrorToast
+import ru.linew.spotifyApp.ui.appComponent
+import ru.linew.spotifyApp.ui.showErrorToast
 import ru.linew.spotifyApp.ui.models.status.TracksListStatus
 
-class TracksListFragment: Fragment(R.layout.fragment_tracks){
+class TracksListFragment : Fragment(R.layout.fragment_tracks) {
     private val binding by viewBinding(FragmentTracksBinding::bind)
-    private val viewModel: TracksViewModel by viewModels{
+    private val viewModel: TracksViewModel by viewModels {
         TracksViewModel.Factory(
             requireActivity().appComponent.viewModelTracks()
         )
@@ -24,14 +24,16 @@ class TracksListFragment: Fragment(R.layout.fragment_tracks){
         setupTracksList()
         setupObservers()
     }
-    private fun setupTracksList(){
+
+    private fun setupTracksList() {
         adapter = TracksListAdapter()
         binding.tracksList.adapter = adapter
         binding.tracksList.setHasFixedSize(true)
     }
-    private fun setupObservers(){
-        viewModel.tracksListStatus.observe(viewLifecycleOwner){
-            when(it){
+
+    private fun setupObservers() {
+        viewModel.tracksListStatus.observe(viewLifecycleOwner) {
+            when (it) {
                 is TracksListStatus.Error -> showErrorToast("Unknown error")
                 TracksListStatus.Loading -> {} //nothing
                 TracksListStatus.Null -> viewModel.getTracks()
@@ -40,8 +42,8 @@ class TracksListFragment: Fragment(R.layout.fragment_tracks){
         }
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onDestroyView() {
+        super.onDestroyView()
         viewModel.clearTracksData()
     }
 

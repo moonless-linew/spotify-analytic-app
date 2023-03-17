@@ -13,7 +13,7 @@ import ru.linew.spotifyApp.data.repository.SpotifyRepository
 import ru.linew.spotifyApp.ui.models.status.TracksListStatus
 
 class TracksViewModel @AssistedInject constructor(
-    val spotifyRepository: SpotifyRepository
+    private val spotifyRepository: SpotifyRepository
 ): ViewModel() {
     @AssistedFactory
     interface TracksViewModelFactory{

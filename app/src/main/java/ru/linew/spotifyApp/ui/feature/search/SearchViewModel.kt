@@ -43,11 +43,12 @@ class SearchViewModel @AssistedInject constructor(
                 _searchPageStatus.postValue(SearchPageStatus.Error(it))
                 }
             ))
+
     }
 
 
     fun clearPagingData(){
-        _searchPageStatus.postValue(SearchPageStatus.Null)
+        _searchPageStatus.value = SearchPageStatus.Null
     }
 
     fun addTrack(track: Track){

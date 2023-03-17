@@ -1,4 +1,4 @@
-package ru.linew.spotifyApp.di
+package ru.linew.spotifyApp.ui
 
 import android.content.Context
 import android.widget.Toast

@@ -4,14 +4,17 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.jakewharton.rxbinding4.widget.textChanges
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import ru.linew.spotifyApp.R
 import ru.linew.spotifyApp.databinding.FragmentSearchBinding
-import ru.linew.spotifyApp.di.appComponent
-import ru.linew.spotifyApp.di.showErrorToast
-import ru.linew.spotifyApp.di.showMessageToast
+import ru.linew.spotifyApp.databinding.FragmentTrackInfoDialogBinding
+import ru.linew.spotifyApp.ui.appComponent
+import ru.linew.spotifyApp.ui.showErrorToast
+import ru.linew.spotifyApp.ui.showMessageToast
 import ru.linew.spotifyApp.ui.models.core.Track
 import ru.linew.spotifyApp.ui.models.status.SearchPageStatus
 import java.util.concurrent.TimeUnit
@@ -26,9 +29,21 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     }
     private lateinit var adapter: PagingSearchAdapter
     private val itemClickCallback: (Track) -> Unit = {
-        showMessageToast("Added")
         viewModel.addTrack(it)
     }
+    private val trackInfoCallback: (Track) -> Unit = { track ->
+        BottomSheetDialog(requireContext()).apply {
+            val dialogBinding: FragmentTrackInfoDialogBinding =
+                FragmentTrackInfoDialogBinding.inflate(layoutInflater)
+            with(dialogBinding) {
+                trackTitle.text = track.name
+                trackArtist.text = track.artist
+            }
+            setContentView(dialogBinding.root)
+            show()
+        }
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupPageStatusObserver()
@@ -43,7 +58,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     }
 
     private fun setupSearchRecyclerView() {
-        adapter = PagingSearchAdapter(itemClickCallback)
+        adapter = PagingSearchAdapter(itemClickCallback, trackInfoCallback)
         binding.searchResultList.adapter = adapter
         binding.searchResultList.setHasFixedSize(true)
     }
@@ -74,10 +89,13 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
     }
 
-    override fun onDetach() {
+
+    override fun onDestroyView() {
         viewModel.clearPagingData()
-        super.onDetach()
+        super.onDestroyView()
     }
+
+
 }
 
 

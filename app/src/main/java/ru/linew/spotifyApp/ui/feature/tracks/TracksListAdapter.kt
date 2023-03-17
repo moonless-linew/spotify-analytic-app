@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import ru.linew.spotifyApp.databinding.TracksTrackItemBinding
 import ru.linew.spotifyApp.ui.models.core.Track
 
@@ -30,6 +31,9 @@ class TracksListAdapter():
                 with(binding) {
                     nameTextView.text = track.name
                     artistTextView.text = track.artist
+                    Glide.with(binding.root.context)
+                        .load(track.imageUrl)
+                        .into(iconImageView)
                 }
 
             }

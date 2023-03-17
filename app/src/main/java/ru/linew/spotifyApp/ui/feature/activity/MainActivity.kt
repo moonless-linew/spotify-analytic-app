@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import ru.linew.spotifyApp.R
-import ru.linew.spotifyApp.di.appComponent
+import ru.linew.spotifyApp.ui.appComponent
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
