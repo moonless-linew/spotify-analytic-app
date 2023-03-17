@@ -8,8 +8,8 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.linew.spotifyApp.R
 import ru.linew.spotifyApp.databinding.FragmentTracksBinding
 import ru.linew.spotifyApp.ui.appComponent
-import ru.linew.spotifyApp.ui.showErrorToast
 import ru.linew.spotifyApp.ui.models.status.TracksListStatus
+import ru.linew.spotifyApp.ui.showErrorToast
 
 class TracksListFragment : Fragment(R.layout.fragment_tracks) {
     private val binding by viewBinding(FragmentTracksBinding::bind)

@@ -9,9 +9,11 @@ import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
 import ru.linew.spotifyApp.data.datasource.local.DataBaseDataSource
 import ru.linew.spotifyApp.data.datasource.remote.SearchPagingSource
+import ru.linew.spotifyApp.data.datasource.remote.SpotifyDataSource
 import ru.linew.spotifyApp.data.mappers.TrackMapper
 import ru.linew.spotifyApp.data.utils.PagingConfigValues
 import ru.linew.spotifyApp.ui.models.core.Track
+import ru.linew.spotifyApp.ui.models.core.TrackAnalysis
 import ru.linew.spotifyApp.ui.repository.ISpotifyRepository
 import javax.inject.Inject
 
@@ -19,6 +21,7 @@ import javax.inject.Inject
 class SpotifyRepository @Inject constructor(
     private val searchPagingSourceFactory: SearchPagingSource.SearchPagingSourceFactory,
     private val tokenRepository: ITokenRepository,
+    private val spotifyDataSource: SpotifyDataSource.SpotifyDataSourceFactory,
     private val dataBaseDataSource: DataBaseDataSource
 ) :
     ISpotifyRepository {
@@ -66,6 +69,33 @@ class SpotifyRepository @Inject constructor(
         return tracks
             .map {
                 it.map { item -> Track(item.id, item.name, item.artist, item.imageUrl) }
+            }
+    }
+
+    override fun analysisTrack(track: Track): Single<TrackAnalysis> {
+        return tokenRepository
+            .getToken(true)
+            .flatMap {
+                spotifyDataSource.create(it).analysisTrack(track.id)
+            }
+            .map {
+                TrackAnalysis(
+                    it.acousticness,
+                    it.danceability,
+                    it.duration_ms,
+                    it.energy,
+                    it.id,
+                    it.instrumentalness,
+                    it.key,
+                    it.liveness,
+                    it.loudness,
+                    it.mode,
+                    it.speechiness,
+                    it.tempo,
+                    it.time_signature,
+                    it.type,
+                    it.valence
+                )
             }
     }
 

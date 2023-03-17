@@ -7,6 +7,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.linew.spotifyApp.ui.models.core.Track
+import ru.linew.spotifyApp.ui.models.status.AnalysisTrackStatus
 import ru.linew.spotifyApp.ui.models.status.SearchPageStatus
 import ru.linew.spotifyApp.ui.repository.ISpotifyRepository
 
@@ -32,6 +33,10 @@ class SearchViewModel @AssistedInject constructor(
     val searchPageStatus: LiveData<SearchPageStatus>
         get() = _searchPageStatus
 
+    private val _analysisTrackStatus = MutableLiveData<AnalysisTrackStatus>(AnalysisTrackStatus.Null)
+    val analysisTrackStatus: LiveData<AnalysisTrackStatus>
+        get() = _analysisTrackStatus
+
     fun searchTracks(searchString: String) {
         _searchPageStatus.postValue(SearchPageStatus.Loading)
         disposeBag.add(spotifyRepository
@@ -52,11 +57,25 @@ class SearchViewModel @AssistedInject constructor(
     }
 
     fun addTrack(track: Track){
+        disposeBag.add(
         spotifyRepository.saveTrack(track)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe()
+            .subscribe())
     }
+    fun analysisTrack(track: Track){
+        _analysisTrackStatus.postValue(AnalysisTrackStatus.Loading)
+        disposeBag.add(
+        spotifyRepository.analysisTrack(track = track)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _analysisTrackStatus.postValue(AnalysisTrackStatus.Success(it))
+            },{
+                _analysisTrackStatus.postValue(AnalysisTrackStatus.Error(it))
+            }))
+    }
+
 
     override fun onCleared() {
         disposeBag.dispose()

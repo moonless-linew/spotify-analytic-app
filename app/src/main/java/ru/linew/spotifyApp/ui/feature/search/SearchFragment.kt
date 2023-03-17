@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.jakewharton.rxbinding4.widget.textChanges
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -13,10 +13,9 @@ import ru.linew.spotifyApp.R
 import ru.linew.spotifyApp.databinding.FragmentSearchBinding
 import ru.linew.spotifyApp.databinding.FragmentTrackInfoDialogBinding
 import ru.linew.spotifyApp.ui.appComponent
-import ru.linew.spotifyApp.ui.showErrorToast
-import ru.linew.spotifyApp.ui.showMessageToast
 import ru.linew.spotifyApp.ui.models.core.Track
 import ru.linew.spotifyApp.ui.models.status.SearchPageStatus
+import ru.linew.spotifyApp.ui.showErrorToast
 import java.util.concurrent.TimeUnit
 
 class SearchFragment : Fragment(R.layout.fragment_search) {
@@ -38,6 +37,9 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             with(dialogBinding) {
                 trackTitle.text = track.name
                 trackArtist.text = track.artist
+                Glide.with(requireContext())
+                    .load(track.imageUrl)
+                    .into(imageView)
             }
             setContentView(dialogBinding.root)
             show()

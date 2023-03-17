@@ -2,7 +2,6 @@ package ru.linew.spotifyApp.ui.feature.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
