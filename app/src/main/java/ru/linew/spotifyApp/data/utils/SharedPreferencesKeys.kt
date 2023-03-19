@@ -5,5 +5,6 @@ object SharedPreferencesKeys {
     const val ACCESS_TOKEN = "access_token"
     const val TOKEN_TYPE = "token_type"
     const val EXPIRES_IN = "expires_in"
+    const val LAST_MODIFIED_TIME = "last_modified_time"
 
 }

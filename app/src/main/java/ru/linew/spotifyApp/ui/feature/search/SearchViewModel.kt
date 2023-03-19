@@ -58,7 +58,7 @@ class SearchViewModel @AssistedInject constructor(
 
     fun addTrack(track: Track){
         disposeBag.add(
-        spotifyRepository.saveTrack(track)
+        spotifyRepository.saveTrackToLocalStorage(track)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe())

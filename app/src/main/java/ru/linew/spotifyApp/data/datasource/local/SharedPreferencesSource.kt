@@ -24,4 +24,15 @@ class SharedPreferencesSource @Inject constructor(private val sharedPreferences:
             .apply()
     }
 
+    override fun getTokenLastModifiedTime(): Long {
+        return sharedPreferences.getLong(SharedPreferencesKeys.LAST_MODIFIED_TIME, 0)
+    }
+
+    override fun setTokenLastModifiedTime(milliseconds: Long) {
+        sharedPreferences.edit()
+            .putLong(SharedPreferencesKeys.LAST_MODIFIED_TIME, milliseconds)
+            .apply()
+    }
+
+
 }

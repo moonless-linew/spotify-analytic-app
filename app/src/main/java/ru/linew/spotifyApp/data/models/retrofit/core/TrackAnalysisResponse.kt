@@ -1,6 +1,6 @@
 package ru.linew.spotifyApp.data.models.retrofit.core
 
-data class TrackAnalysisResponce(
+data class TrackAnalysisResponse(
     val acousticness: Double,
     val analysis_url: String,
     val danceability: Double,

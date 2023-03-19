@@ -36,7 +36,7 @@ class TracksViewModel @AssistedInject constructor(
         _tracksListStatus.postValue(TracksListStatus.Loading)
         disposeBag.add(
         spotifyRepository
-            .loadTracks()
+            .loadTracksFromLocalStorage()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({

@@ -23,7 +23,7 @@ class SearchPagingSource @AssistedInject constructor(
     interface SearchPagingSourceFactory {
         fun create(apiToken: Token, searchString: String): SearchPagingSource
     }
-    override fun getRefreshKey(state: PagingState<Int, Track>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, Track>): Int {
         return 0
     }
 
@@ -32,11 +32,13 @@ class SearchPagingSource @AssistedInject constructor(
         return spotifyService.searchTracks(
             searchString,
             offset ?: 0,
-            "Bearer " + apiToken.access_token,
+            apiToken.toString(),
         )
             .subscribeOn(Schedulers.io())
             .map {
-            toLoadResult(it.searchResponse, offset ?: 0)
+            toLoadResult(
+                data = it.searchResponse,
+                offset = offset ?: 0)
         }
             .onErrorReturn {
                 LoadResult.Error(it)

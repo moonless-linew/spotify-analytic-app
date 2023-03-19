@@ -1,4 +1,5 @@
 package ru.linew.spotifyApp.data.repository
+
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -10,6 +11,7 @@ import io.reactivex.rxjava3.core.Single
 import ru.linew.spotifyApp.data.datasource.local.DataBaseDataSource
 import ru.linew.spotifyApp.data.datasource.remote.SearchPagingSource
 import ru.linew.spotifyApp.data.datasource.remote.SpotifyDataSource
+import ru.linew.spotifyApp.data.mappers.TrackAnalysisMapper
 import ru.linew.spotifyApp.data.mappers.TrackMapper
 import ru.linew.spotifyApp.data.utils.PagingConfigValues
 import ru.linew.spotifyApp.ui.models.core.Track
@@ -36,7 +38,7 @@ class SpotifyRepository @Inject constructor(
         )
 
         return tokenRepository
-            .getToken(true)
+            .getToken()
             .toFlowable()
             .flatMap { token ->
                 Pager(
@@ -53,9 +55,21 @@ class SpotifyRepository @Inject constructor(
                 }
             }
     }
-    override fun saveTrack(track: Track): Completable {
+
+    override fun analysisTrack(track: Track): Single<TrackAnalysis> {
+        return tokenRepository
+            .getToken()
+            .flatMap {
+                spotifyDataSource.create(it).analysisTrack(track.id)
+            }
+            .map {
+                TrackAnalysisMapper.transform(it)
+            }
+    }
+
+    override fun saveTrackToLocalStorage(track: Track): Completable {
         return dataBaseDataSource.insertTrack(
-            ru.linew.spotifyApp.data.models.room.Track(
+            ru.linew.spotifyApp.data.models.room.TrackEntity(
                 track.id,
                 track.name,
                 track.artist,
@@ -64,38 +78,10 @@ class SpotifyRepository @Inject constructor(
         )
     }
 
-    override fun loadTracks(): Single<List<Track>> {
-        val tracks = dataBaseDataSource.getAllTracks()
-        return tracks
+    override fun loadTracksFromLocalStorage(): Single<List<Track>> {
+        return dataBaseDataSource.getAllTracks()
             .map {
                 it.map { item -> Track(item.id, item.name, item.artist, item.imageUrl) }
-            }
-    }
-
-    override fun analysisTrack(track: Track): Single<TrackAnalysis> {
-        return tokenRepository
-            .getToken(true)
-            .flatMap {
-                spotifyDataSource.create(it).analysisTrack(track.id)
-            }
-            .map {
-                TrackAnalysis(
-                    it.acousticness,
-                    it.danceability,
-                    it.duration_ms,
-                    it.energy,
-                    it.id,
-                    it.instrumentalness,
-                    it.key,
-                    it.liveness,
-                    it.loudness,
-                    it.mode,
-                    it.speechiness,
-                    it.tempo,
-                    it.time_signature,
-                    it.type,
-                    it.valence
-                )
             }
     }
 

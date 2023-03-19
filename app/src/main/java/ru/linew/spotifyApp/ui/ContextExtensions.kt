@@ -1,8 +1,6 @@
 package ru.linew.spotifyApp.ui
 
 import android.content.Context
-import android.widget.Toast
-import androidx.fragment.app.Fragment
 import ru.linew.spotifyApp.di.component.AppComponent
 import ru.linew.spotifyApp.ui.app.SpotifyApp
 
@@ -11,9 +9,3 @@ get() = when(this){
     is SpotifyApp -> appComponent
     else -> this.applicationContext.appComponent
 }
-fun Fragment.showErrorToast(msg: String) {
-    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-
-}
-fun Fragment.showMessageToast(msg: String) {
-    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()}

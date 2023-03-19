@@ -5,4 +5,8 @@ import ru.linew.spotifyApp.data.models.retrofit.auth.Token
 interface ISharedPreferencesDataSource {
     fun getToken(): Token
     fun saveToken(token: Token)
+    fun getTokenLastModifiedTime(): Long
+
+    fun setTokenLastModifiedTime(milliseconds: Long)
+
 }

@@ -10,7 +10,7 @@ import ru.linew.spotifyApp.ui.models.core.TrackAnalysis
 
 interface ISpotifyRepository {
     fun searchTracks(searchString: String): Flowable<PagingData<Track>>
-    fun saveTrack(track: Track): Completable
-    fun loadTracks(): Single<List<Track>>
+    fun saveTrackToLocalStorage(track: Track): Completable
+    fun loadTracksFromLocalStorage(): Single<List<Track>>
     fun analysisTrack(track: Track): Single<TrackAnalysis>
 }

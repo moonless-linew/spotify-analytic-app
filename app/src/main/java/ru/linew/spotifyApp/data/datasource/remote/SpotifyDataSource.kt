@@ -5,7 +5,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import io.reactivex.rxjava3.core.Single
 import ru.linew.spotifyApp.data.models.retrofit.auth.Token
-import ru.linew.spotifyApp.data.models.retrofit.core.TrackAnalysisResponce
+import ru.linew.spotifyApp.data.models.retrofit.core.TrackAnalysisResponse
 import ru.linew.spotifyApp.data.retrofit.SpotifyService
 
 class SpotifyDataSource @AssistedInject constructor(
@@ -17,7 +17,7 @@ class SpotifyDataSource @AssistedInject constructor(
         fun create(apiToken: Token): SpotifyDataSource
     }
 
-    fun analysisTrack(id: String): Single<TrackAnalysisResponce> {
-        return spotifyService.analysisTrack(id, "Bearer " + apiToken.access_token)
+    fun analysisTrack(id: String): Single<TrackAnalysisResponse> {
+        return spotifyService.analysisTrack(id, apiToken.toString())
     }
 }

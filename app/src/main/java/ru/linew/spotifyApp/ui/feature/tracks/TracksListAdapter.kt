@@ -8,7 +8,7 @@ import com.bumptech.glide.Glide
 import ru.linew.spotifyApp.databinding.TracksTrackItemBinding
 import ru.linew.spotifyApp.ui.models.core.Track
 
-class TracksListAdapter():
+class TracksListAdapter :
     ListAdapter<Track, TracksListAdapter.TrackViewHolder>(TracksItemCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {

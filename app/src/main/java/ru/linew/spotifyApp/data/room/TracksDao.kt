@@ -6,14 +6,14 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
-import ru.linew.spotifyApp.data.models.room.Track
+import ru.linew.spotifyApp.data.models.room.TrackEntity
 
 
 @Dao
 interface TracksDao {
     @Query("SELECT * FROM tracks")
-    fun getAllTracks(): Single<List<Track>>
+    fun getAllTracks(): Single<List<TrackEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertTrack(track: Track): Completable
+    fun insertTrack(trackEntity: TrackEntity): Completable
 }
