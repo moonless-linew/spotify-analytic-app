@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.paging.LoadState
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.jakewharton.rxbinding4.widget.textChanges
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import retrofit2.HttpException
 import ru.linew.spotifyApp.R
 import ru.linew.spotifyApp.databinding.FragmentSearchBinding
 import ru.linew.spotifyApp.databinding.FragmentTrackInfoDialogBinding
@@ -16,6 +18,7 @@ import ru.linew.spotifyApp.ui.appComponent
 import ru.linew.spotifyApp.ui.models.core.Track
 import ru.linew.spotifyApp.ui.models.status.SearchPageStatus
 import ru.linew.spotifyApp.ui.showErrorToast
+import java.net.UnknownHostException
 import java.util.concurrent.TimeUnit
 
 class SearchFragment : Fragment(R.layout.fragment_search) {
@@ -48,8 +51,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setupPageStatusObserver()
         setupSearchRecyclerView()
+        setupPageStatusObserver()
         setupSearchEditText()
         super.onViewCreated(view, savedInstanceState)
     }
@@ -62,6 +65,13 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private fun setupSearchRecyclerView() {
         adapter = PagingSearchAdapter(itemClickCallback, trackInfoCallback)
         binding.searchResultList.adapter = adapter
+        adapter.addLoadStateListener {
+            if (it.refresh is LoadState.Error) {
+                if ((it.refresh as LoadState.Error).error is UnknownHostException) {
+                    showErrorToast("Internet error")
+                }
+            }
+        }
         binding.searchResultList.setHasFixedSize(true)
     }
 
@@ -69,7 +79,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         disposeBag.add(
             binding.searchInput.editText!!.textChanges()
                 .skipInitialValue()
-                .debounce(1000, TimeUnit.MILLISECONDS)
+                .debounce(200, TimeUnit.MILLISECONDS)
                 .filter { it.isNotEmpty() }
                 .subscribe {
                     viewModel.searchTracks(it.toString())
@@ -89,12 +99,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 else -> {} //nothing
             }
         }
-    }
-
-
-    override fun onDestroyView() {
-        viewModel.clearPagingData()
-        super.onDestroyView()
     }
 
 

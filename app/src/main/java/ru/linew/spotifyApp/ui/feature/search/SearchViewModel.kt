@@ -1,11 +1,13 @@
 package ru.linew.spotifyApp.ui.feature.search
 
 import androidx.lifecycle.*
+import androidx.paging.rxjava3.cachedIn
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.linew.spotifyApp.ui.models.core.Track
 import ru.linew.spotifyApp.ui.models.status.AnalysisTrackStatus
 import ru.linew.spotifyApp.ui.models.status.SearchPageStatus
@@ -37,10 +39,14 @@ class SearchViewModel @AssistedInject constructor(
     val analysisTrackStatus: LiveData<AnalysisTrackStatus>
         get() = _analysisTrackStatus
 
+
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun searchTracks(searchString: String) {
         _searchPageStatus.postValue(SearchPageStatus.Loading)
         disposeBag.add(spotifyRepository
             .searchTracks(searchString)
+            .cachedIn(viewModelScope)
             .subscribe({
                 _searchPageStatus.postValue(SearchPageStatus.Success(it))
             },
@@ -49,11 +55,6 @@ class SearchViewModel @AssistedInject constructor(
                 }
             ))
 
-    }
-
-
-    fun clearPagingData(){
-        _searchPageStatus.value = SearchPageStatus.Null
     }
 
     fun addTrack(track: Track){

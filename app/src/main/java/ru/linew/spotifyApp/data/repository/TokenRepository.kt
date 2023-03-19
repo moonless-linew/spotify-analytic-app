@@ -19,6 +19,9 @@ class TokenRepository @Inject constructor(
                 sharedPreferencesDataSource.setTokenLastModifiedTime(System.currentTimeMillis())
                 it
             }
+                .onErrorReturn {
+                    sharedPreferencesDataSource.getToken()
+                }
         } else {
             Single.just(sharedPreferencesDataSource.getToken())
         }
@@ -29,7 +32,7 @@ class TokenRepository @Inject constructor(
         lastTimeModified: Long = sharedPreferencesDataSource.getTokenLastModifiedTime()
     ): Boolean {
         return if (token.access_token != "") {
-            System.currentTimeMillis() - lastTimeModified > token.expires_in.toInt() * 60
+            System.currentTimeMillis() - lastTimeModified > token.expires_in.toInt() * 1000
         } else {
             true
         }
