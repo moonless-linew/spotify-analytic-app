@@ -13,29 +13,30 @@ class TokenRepository @Inject constructor(
 ) : ITokenRepository {
 
     override fun getToken(forceRefresh: Boolean): Single<Token> {
-        return if (isTokenExpired() || forceRefresh) {
+        val currentToken = sharedPreferencesDataSource.getToken()
+        return if (isTokenNull(currentToken) || isTokenExpired(currentToken) || forceRefresh) {
             authApi.requestToken().map {
+                it.created_in = System.currentTimeMillis()
                 sharedPreferencesDataSource.saveToken(it)
-                sharedPreferencesDataSource.setTokenLastModifiedTime(System.currentTimeMillis())
                 it
             }
-                .onErrorReturn {
-                    sharedPreferencesDataSource.getToken()
-                }
         } else {
             Single.just(sharedPreferencesDataSource.getToken())
         }
     }
 
     private fun isTokenExpired(
-        token: Token = sharedPreferencesDataSource.getToken(),
-        lastTimeModified: Long = sharedPreferencesDataSource.getTokenLastModifiedTime()
+        token: Token,
     ): Boolean {
         return if (token.access_token != "") {
-            System.currentTimeMillis() - lastTimeModified > token.expires_in.toInt() * 1000
+            System.currentTimeMillis() - (token.created_in ?: 0) > token.expires_in.toInt() * 1000
         } else {
             true
         }
+    }
+
+    private fun isTokenNull(token: Token): Boolean {
+        return (token.access_token == "")
     }
 
 }

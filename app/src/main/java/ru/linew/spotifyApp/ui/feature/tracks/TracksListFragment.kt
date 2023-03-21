@@ -8,7 +8,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.linew.spotifyApp.R
 import ru.linew.spotifyApp.databinding.FragmentTracksBinding
 import ru.linew.spotifyApp.ui.appComponent
-import ru.linew.spotifyApp.ui.models.status.TracksListStatus
+import ru.linew.spotifyApp.ui.models.state.TracksListState
 import ru.linew.spotifyApp.ui.showErrorToast
 
 class TracksListFragment : Fragment(R.layout.fragment_tracks) {
@@ -32,12 +32,12 @@ class TracksListFragment : Fragment(R.layout.fragment_tracks) {
     }
 
     private fun setupObservers() {
-        viewModel.tracksListStatus.observe(viewLifecycleOwner) {
+        viewModel.tracksListState.observe(viewLifecycleOwner) {
             when (it) {
-                is TracksListStatus.Error -> showErrorToast("Unknown error")
-                TracksListStatus.Loading -> {} //nothing
-                TracksListStatus.Null -> viewModel.getTracks()
-                is TracksListStatus.Success -> adapter.submitList(it.data)
+                is TracksListState.Error -> showErrorToast("Unknown error")
+                TracksListState.Loading -> {} //nothing
+                TracksListState.Null -> viewModel.getTracks()
+                is TracksListState.Success -> adapter.submitList(it.data)
             }
         }
     }

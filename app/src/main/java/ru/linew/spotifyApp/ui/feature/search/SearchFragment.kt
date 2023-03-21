@@ -10,13 +10,12 @@ import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.jakewharton.rxbinding4.widget.textChanges
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import retrofit2.HttpException
 import ru.linew.spotifyApp.R
 import ru.linew.spotifyApp.databinding.FragmentSearchBinding
 import ru.linew.spotifyApp.databinding.FragmentTrackInfoDialogBinding
 import ru.linew.spotifyApp.ui.appComponent
 import ru.linew.spotifyApp.ui.models.core.Track
-import ru.linew.spotifyApp.ui.models.status.SearchPageStatus
+import ru.linew.spotifyApp.ui.models.state.SearchPageState
 import ru.linew.spotifyApp.ui.showErrorToast
 import java.net.UnknownHostException
 import java.util.concurrent.TimeUnit
@@ -52,10 +51,13 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupSearchRecyclerView()
-        setupPageStatusObserver()
+        setupPageStateObserver()
         setupSearchEditText()
+
         super.onViewCreated(view, savedInstanceState)
     }
+
+
 
     override fun onDestroy() {
         disposeBag.dispose()
@@ -87,13 +89,13 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     }
 
-    private fun setupPageStatusObserver() {
-        viewModel.searchPageStatus.observe(viewLifecycleOwner) {
+    private fun setupPageStateObserver() {
+        viewModel.searchPageState.observe(viewLifecycleOwner) {
             when (it) {
-                is SearchPageStatus.Error -> {
+                is SearchPageState.Error -> {
                     showErrorToast("Internet error")
                 }
-                is SearchPageStatus.Success -> {
+                is SearchPageState.Success -> {
                     adapter.submitData(lifecycle = lifecycle, it.data)
                 }
                 else -> {} //nothing

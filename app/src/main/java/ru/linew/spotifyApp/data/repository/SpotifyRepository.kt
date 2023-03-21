@@ -11,8 +11,8 @@ import io.reactivex.rxjava3.core.Single
 import ru.linew.spotifyApp.data.datasource.local.DataBaseDataSource
 import ru.linew.spotifyApp.data.datasource.remote.SearchPagingSource
 import ru.linew.spotifyApp.data.datasource.remote.SpotifyDataSource
-import ru.linew.spotifyApp.data.mappers.TrackAnalysisMapper
-import ru.linew.spotifyApp.data.mappers.TrackMapper
+import ru.linew.spotifyApp.data.mappers.toDataLayer
+import ru.linew.spotifyApp.data.mappers.toUiLayer
 import ru.linew.spotifyApp.data.models.retrofit.auth.Token
 import ru.linew.spotifyApp.data.utils.PagingConfigValues
 import ru.linew.spotifyApp.ui.models.core.Track
@@ -40,6 +40,10 @@ class SpotifyRepository @Inject constructor(
 
         return tokenRepository
             .getToken()
+            .onErrorReturn {
+                //костыль, поднимет ошибку в pager
+                Token("", "", "", null)
+            }
             .toFlowable()
             .flatMap { token ->
                 Pager(
@@ -51,8 +55,8 @@ class SpotifyRepository @Inject constructor(
                     }).flowable
             }
             .map {
-                it.map { track ->
-                    TrackMapper.transform(track)
+                it.map { trackResponse ->
+                    trackResponse.toUiLayer()
                 }
             }
     }
@@ -64,25 +68,21 @@ class SpotifyRepository @Inject constructor(
                 spotifyDataSource.create(it).analysisTrack(track.id)
             }
             .map {
-                TrackAnalysisMapper.transform(it)
+                it.toUiLayer()
             }
+
     }
 
     override fun saveTrackToLocalStorage(track: Track): Completable {
         return dataBaseDataSource.insertTrack(
-            ru.linew.spotifyApp.data.models.room.TrackEntity(
-                track.id,
-                track.name,
-                track.artist,
-                track.imageUrl
-            )
+            track.toDataLayer()
         )
     }
 
     override fun loadTracksFromLocalStorage(): Single<List<Track>> {
         return dataBaseDataSource.getAllTracks()
             .map {
-                it.map { item -> Track(item.id, item.name, item.artist, item.imageUrl) }
+                it.map { item -> item.toUiLayer() }
             }
     }
 

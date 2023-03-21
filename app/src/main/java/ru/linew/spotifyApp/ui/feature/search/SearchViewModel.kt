@@ -9,8 +9,8 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.linew.spotifyApp.ui.models.core.Track
-import ru.linew.spotifyApp.ui.models.status.AnalysisTrackStatus
-import ru.linew.spotifyApp.ui.models.status.SearchPageStatus
+import ru.linew.spotifyApp.ui.models.state.AnalysisTrackState
+import ru.linew.spotifyApp.ui.models.state.SearchPageState
 import ru.linew.spotifyApp.ui.repository.ISpotifyRepository
 
 
@@ -31,27 +31,27 @@ class SearchViewModel @AssistedInject constructor(
 
     private val disposeBag = CompositeDisposable()
 
-    private val _searchPageStatus = MutableLiveData<SearchPageStatus>(SearchPageStatus.Null)
-    val searchPageStatus: LiveData<SearchPageStatus>
-        get() = _searchPageStatus
+    private val _searchPageState = MutableLiveData<SearchPageState>(SearchPageState.Null)
+    val searchPageState: LiveData<SearchPageState>
+        get() = _searchPageState
 
-    private val _analysisTrackStatus = MutableLiveData<AnalysisTrackStatus>(AnalysisTrackStatus.Null)
-    val analysisTrackStatus: LiveData<AnalysisTrackStatus>
-        get() = _analysisTrackStatus
+    private val _analysisTrackState = MutableLiveData<AnalysisTrackState>(AnalysisTrackState.Null)
+    val analysisTrackState: LiveData<AnalysisTrackState>
+        get() = _analysisTrackState
 
 
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun searchTracks(searchString: String) {
-        _searchPageStatus.postValue(SearchPageStatus.Loading)
+        _searchPageState.postValue(SearchPageState.Loading)
         disposeBag.add(spotifyRepository
             .searchTracks(searchString)
             .cachedIn(viewModelScope)
             .subscribe({
-                _searchPageStatus.postValue(SearchPageStatus.Success(it))
+                _searchPageState.postValue(SearchPageState.Success(it))
             },
                 {
-                _searchPageStatus.postValue(SearchPageStatus.Error(it))
+                _searchPageState.postValue(SearchPageState.Error(it))
                 }
             ))
 
@@ -65,15 +65,15 @@ class SearchViewModel @AssistedInject constructor(
             .subscribe())
     }
     fun analysisTrack(track: Track){
-        _analysisTrackStatus.postValue(AnalysisTrackStatus.Loading)
+        _analysisTrackState.postValue(AnalysisTrackState.Loading)
         disposeBag.add(
         spotifyRepository.analysisTrack(track = track)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                _analysisTrackStatus.postValue(AnalysisTrackStatus.Success(it))
+                _analysisTrackState.postValue(AnalysisTrackState.Success(it))
             },{
-                _analysisTrackStatus.postValue(AnalysisTrackStatus.Error(it))
+                _analysisTrackState.postValue(AnalysisTrackState.Error(it))
             }))
     }
 

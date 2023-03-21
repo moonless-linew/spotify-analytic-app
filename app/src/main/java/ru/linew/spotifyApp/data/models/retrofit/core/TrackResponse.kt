@@ -1,6 +1,6 @@
 package ru.linew.spotifyApp.data.models.retrofit.core
 
-data class Track(
+data class TrackResponse(
     val album: Album,
     val artists: List<ArtistX>,
     val disc_number: Int,

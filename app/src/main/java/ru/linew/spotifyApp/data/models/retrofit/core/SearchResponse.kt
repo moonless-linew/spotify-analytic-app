@@ -2,7 +2,7 @@ package ru.linew.spotifyApp.data.models.retrofit.core
 
 data class SearchResponse(
     val href: String,
-    val items: List<Track>,
+    val items: List<TrackResponse>,
     val limit: Int,
     val next: String,
     val offset: Int,

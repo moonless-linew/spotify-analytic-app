@@ -10,7 +10,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.linew.spotifyApp.data.repository.SpotifyRepository
-import ru.linew.spotifyApp.ui.models.status.TracksListStatus
+import ru.linew.spotifyApp.ui.models.state.TracksListState
 
 class TracksViewModel @AssistedInject constructor(
     private val spotifyRepository: SpotifyRepository
@@ -28,26 +28,26 @@ class TracksViewModel @AssistedInject constructor(
 
     private val disposeBag = CompositeDisposable()
 
-    private val _tracksListStatus = MutableLiveData<TracksListStatus>(TracksListStatus.Null)
-    val tracksListStatus: LiveData<TracksListStatus>
-        get() = _tracksListStatus
+    private val _tracksListState = MutableLiveData<TracksListState>(TracksListState.Null)
+    val tracksListState: LiveData<TracksListState>
+        get() = _tracksListState
 
     fun getTracks(){
-        _tracksListStatus.postValue(TracksListStatus.Loading)
+        _tracksListState.postValue(TracksListState.Loading)
         disposeBag.add(
         spotifyRepository
             .loadTracksFromLocalStorage()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                _tracksListStatus.postValue(TracksListStatus.Success(it))
+                _tracksListState.postValue(TracksListState.Success(it))
             },{
-                _tracksListStatus.postValue(TracksListStatus.Error(it))
+                _tracksListState.postValue(TracksListState.Error(it))
             })
         )
     }
     fun clearTracksData(){
-        _tracksListStatus.postValue(TracksListStatus.Null)
+        _tracksListState.postValue(TracksListState.Null)
     }
 
     override fun onCleared() {

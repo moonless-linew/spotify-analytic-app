@@ -13,6 +13,7 @@ class SharedPreferencesSource @Inject constructor(private val sharedPreferences:
             sharedPreferences.getString(SharedPreferencesKeys.ACCESS_TOKEN, "") ?: "",
             sharedPreferences.getString(SharedPreferencesKeys.TOKEN_TYPE, "") ?: "",
             sharedPreferences.getString(SharedPreferencesKeys.EXPIRES_IN, "") ?: "",
+            sharedPreferences.getLong(SharedPreferencesKeys.LAST_MODIFIED_TIME, 0)
         )
     }
 
@@ -21,6 +22,7 @@ class SharedPreferencesSource @Inject constructor(private val sharedPreferences:
             .putString(SharedPreferencesKeys.ACCESS_TOKEN, token.access_token)
             .putString(SharedPreferencesKeys.TOKEN_TYPE, token.token_type)
             .putString(SharedPreferencesKeys.EXPIRES_IN, token.expires_in)
+            .putLong(SharedPreferencesKeys.LAST_MODIFIED_TIME, token.created_in ?: 0)
             .apply()
     }
 
