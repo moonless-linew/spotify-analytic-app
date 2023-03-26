@@ -1,14 +1,15 @@
 package ru.linew.spotifyApp.ui.feature.search
 
 import android.os.Bundle
+
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.paging.LoadState
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.jakewharton.rxbinding4.widget.textChanges
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import ru.linew.spotifyApp.R
 import ru.linew.spotifyApp.databinding.FragmentSearchBinding
@@ -18,7 +19,6 @@ import ru.linew.spotifyApp.ui.models.core.Track
 import ru.linew.spotifyApp.ui.models.state.SearchPageState
 import ru.linew.spotifyApp.ui.showErrorToast
 import java.net.UnknownHostException
-import java.util.concurrent.TimeUnit
 
 class SearchFragment : Fragment(R.layout.fragment_search) {
     private val disposeBag = CompositeDisposable()
@@ -39,9 +39,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             with(dialogBinding) {
                 trackTitle.text = track.name
                 trackArtist.text = track.artist
-                Glide.with(requireContext())
-                    .load(track.imageUrl)
-                    .into(imageView)
+                Glide.with(requireContext()).load(track.imageUrl).into(imageView)
             }
             setContentView(dialogBinding.root)
             show()
@@ -56,7 +54,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
         super.onViewCreated(view, savedInstanceState)
     }
-
 
 
     override fun onDestroy() {
@@ -78,16 +75,20 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     }
 
     private fun setupSearchEditText() {
-        disposeBag.add(
-            binding.searchInput.editText!!.textChanges()
-                .skipInitialValue()
-                .debounce(200, TimeUnit.MILLISECONDS)
-                .filter { it.isNotEmpty() }
-                .subscribe {
-                    viewModel.searchTracks(it.toString())
-                })
+
+        binding.searchInput.editText.setOnEditorActionListener { v, actionId, event ->
+            if(actionId == EditorInfo.IME_ACTION_SEARCH){
+                val a = v.text.toString()
+                binding.searchInput.hide()
+                binding.searchBar.text = a
+                viewModel.searchTracks(v.text.toString())
+            }
+            return@setOnEditorActionListener true
+        }
+
 
     }
+
 
     private fun setupPageStateObserver() {
         viewModel.searchPageState.observe(viewLifecycleOwner) {

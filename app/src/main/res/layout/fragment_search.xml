@@ -1,34 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical">
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/searchInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:endIconDrawable="@drawable/baseline_search_24"
-        app:endIconMode="custom">
-        <com.google.android.material.textfield.TextInputEditText
-            android:lines="1"
-            android:maxLength="30"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="@string/start_typing"/>
-    </com.google.android.material.textfield.TextInputLayout>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/searchResultList"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/track_item"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        app:layout_behavior="@string/searchbar_scrolling_view_behavior">
+        <androidx.recyclerview.widget.RecyclerView
+            android:paddingTop="80dp"
+            android:clipToPadding="false"
+            android:id="@+id/searchResultList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/track_item"
+            />
+    </FrameLayout>
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.google.android.material.search.SearchBar
+            android:id="@+id/search_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/start_typing" />
+    </com.google.android.material.appbar.AppBarLayout>
 
 
-</LinearLayout>
+    <com.google.android.material.search.SearchView
+        app:autoShowKeyboard="true"
+        android:id="@+id/searchInput"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="@string/start_typing"
+        app:layout_anchor="@id/search_bar"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
