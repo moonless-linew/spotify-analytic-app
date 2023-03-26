@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "ru.linew.spotifyApp"
-        minSdk 29
+        minSdk 25
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -71,10 +71,10 @@ dependencies {
     implementation 'androidx.paging:paging-runtime-ktx:3.1.1'
     kapt 'com.google.dagger:dagger-compiler:2.44.2'
 
-    implementation "androidx.room:room-runtime:2.5.0"
-    annotationProcessor "androidx.room:room-compiler:2.5.0"
-    kapt "androidx.room:room-compiler:2.5.0"
-    implementation "androidx.room:room-rxjava3:2.5.0"
+    implementation "androidx.room:room-runtime:2.5.1"
+    annotationProcessor "androidx.room:room-compiler:2.5.1"
+    kapt "androidx.room:room-compiler:2.5.1"
+    implementation "androidx.room:room-rxjava3:2.5.1"
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

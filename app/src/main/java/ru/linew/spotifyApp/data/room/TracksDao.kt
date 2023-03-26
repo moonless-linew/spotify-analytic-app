@@ -14,6 +14,11 @@ interface TracksDao {
     @Query("SELECT * FROM tracks")
     fun getAllTracks(): Single<List<TrackEntity>>
 
+    @Query("SELECT COUNT(*) FROM tracks WHERE id = :trackId")
+    fun getCountOfRequestedTrackId(trackId: String): Single<Int>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertTrack(trackEntity: TrackEntity): Completable
+
+
 }

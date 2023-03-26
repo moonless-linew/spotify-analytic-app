@@ -18,4 +18,8 @@ class DataBaseDataSource @Inject constructor (
     override fun getAllTracks(): Single<List<TrackEntity>> {
         return room.getAllTracks()
     }
+
+    override fun getCountOfRequestedTrack(trackEntity: TrackEntity): Single<Int>{
+        return room.getCountOfRequestedTrackId(trackEntity.id)
+    }
 }

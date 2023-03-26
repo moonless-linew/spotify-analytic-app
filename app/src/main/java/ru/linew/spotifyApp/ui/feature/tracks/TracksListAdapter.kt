@@ -5,7 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import ru.linew.spotifyApp.databinding.TracksTrackItemBinding
+import ru.linew.spotifyApp.R
+import ru.linew.spotifyApp.databinding.TrackItemBinding
 import ru.linew.spotifyApp.ui.models.core.Track
 
 class TracksListAdapter :
@@ -13,9 +14,11 @@ class TracksListAdapter :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         return TrackViewHolder(
-            TracksTrackItemBinding.inflate(LayoutInflater.from(parent.context),
-            parent,
-            false)
+            TrackItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
         )
     }
 
@@ -25,18 +28,33 @@ class TracksListAdapter :
         }
     }
 
-    class TrackViewHolder(private val binding: TracksTrackItemBinding) :
+    class TrackViewHolder(private val binding: TrackItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-            fun bind(track: Track){
-                with(binding) {
-                    nameTextView.text = track.name
-                    artistTextView.text = track.artist
-                    Glide.with(binding.root.context)
-                        .load(track.imageUrl)
-                        .into(iconImageView)
+        fun bind(track: Track) {
+            with(binding) {
+                nameTextView.text = track.name
+                artistTextView.text = track.artist
+                Glide.with(binding.root.context)
+                    .load(track.imageUrl)
+                    .into(iconImageView)
+                if (track.isLiked) {
+                    likeButton.setCompoundDrawablesWithIntrinsicBounds(
+                        0,
+                        0,
+                        R.drawable.baseline_favorite_24,
+                        0
+                    )
+                } else {
+                    likeButton.setCompoundDrawablesWithIntrinsicBounds(
+                        0,
+                        0,
+                        R.drawable.baseline_favorite_border_24,
+                        0
+                    )
                 }
-
             }
+
+        }
 
     }
 

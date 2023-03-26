@@ -4,5 +4,6 @@ data class Track(
     val id: String,
     val name: String,
     val artist: String,
-    val imageUrl: String
+    val imageUrl: String,
+    var isLiked: Boolean = false
 )

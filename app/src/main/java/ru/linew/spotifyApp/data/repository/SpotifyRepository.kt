@@ -1,17 +1,16 @@
 package ru.linew.spotifyApp.data.repository
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.map
+import androidx.paging.*
 import androidx.paging.rxjava3.flowable
+import androidx.paging.rxjava3.mapAsync
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.linew.spotifyApp.data.datasource.local.DataBaseDataSource
 import ru.linew.spotifyApp.data.datasource.remote.SearchPagingSource
 import ru.linew.spotifyApp.data.datasource.remote.SpotifyDataSource
-import ru.linew.spotifyApp.data.mappers.toDataLayer
+import ru.linew.spotifyApp.data.mappers.toDataBaseEntity
 import ru.linew.spotifyApp.data.mappers.toUiLayer
 import ru.linew.spotifyApp.data.models.retrofit.auth.Token
 import ru.linew.spotifyApp.data.utils.PagingConfigValues
@@ -29,7 +28,7 @@ class SpotifyRepository @Inject constructor(
 ) :
     ISpotifyRepository {
 
-    override fun searchTracks(searchString: String): Flowable<PagingData<Track>> {
+    override fun getSearchPagesByString(searchString: String): Flowable<PagingData<Track>> {
         val pagingConfig = PagingConfig(
             pageSize = PagingConfigValues.LIMIT,
             enablePlaceholders = true,
@@ -54,14 +53,22 @@ class SpotifyRepository @Inject constructor(
                         )
                     }).flowable
             }
-            .map {
-                it.map { trackResponse ->
-                    trackResponse.toUiLayer()
+            .map { pagingData ->
+                pagingData.mapAsync {trackResponse ->
+                    dataBaseDataSource.getCountOfRequestedTrack(trackResponse.toDataBaseEntity())
+                        .subscribeOn(Schedulers.io())
+                        .map {
+                            trackResponse.toUiLayer().apply {
+                                isLiked = it >= 1
+                            }
+                        }
                 }
+
+
             }
     }
 
-    override fun analysisTrack(track: Track): Single<TrackAnalysis> {
+    override fun getTrackAnalysis(track: Track): Single<TrackAnalysis> {
         return tokenRepository
             .getToken()
             .flatMap {
@@ -75,14 +82,16 @@ class SpotifyRepository @Inject constructor(
 
     override fun saveTrackToLocalStorage(track: Track): Completable {
         return dataBaseDataSource.insertTrack(
-            track.toDataLayer()
+            track.toDataBaseEntity()
         )
     }
 
     override fun loadTracksFromLocalStorage(): Single<List<Track>> {
         return dataBaseDataSource.getAllTracks()
             .map {
-                it.map { item -> item.toUiLayer() }
+                it.map { item -> item.toUiLayer().apply {
+                    isLiked = true
+                } }
             }
     }
 

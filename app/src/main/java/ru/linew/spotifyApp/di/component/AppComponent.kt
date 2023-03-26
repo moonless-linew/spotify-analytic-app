@@ -13,7 +13,6 @@ import javax.inject.Singleton
 interface AppComponent {
     fun inject(context: MainActivity)
     fun inject(context: SearchFragment)
-
     fun inject(context: SettingsFragment)
 
     fun viewModelSearch(): SearchViewModel.SearchViewModelFactory

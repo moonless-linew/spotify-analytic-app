@@ -7,4 +7,5 @@ import ru.linew.spotifyApp.data.models.room.TrackEntity
 interface IDataBaseDataSource {
     fun insertTrack(trackEntity: TrackEntity): Completable
     fun getAllTracks(): Single<List<TrackEntity>>
+    fun getCountOfRequestedTrack(trackEntity: TrackEntity): Single<Int>
 }

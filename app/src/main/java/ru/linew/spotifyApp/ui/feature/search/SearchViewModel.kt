@@ -45,7 +45,7 @@ class SearchViewModel @AssistedInject constructor(
     fun searchTracks(searchString: String) {
         _searchPageState.postValue(SearchPageState.Loading)
         disposeBag.add(spotifyRepository
-            .searchTracks(searchString)
+            .getSearchPagesByString(searchString)
             .cachedIn(viewModelScope)
             .subscribe({
                 _searchPageState.postValue(SearchPageState.Success(it))
@@ -67,7 +67,7 @@ class SearchViewModel @AssistedInject constructor(
     fun analysisTrack(track: Track){
         _analysisTrackState.postValue(AnalysisTrackState.Loading)
         disposeBag.add(
-        spotifyRepository.analysisTrack(track = track)
+        spotifyRepository.getTrackAnalysis(track = track)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
