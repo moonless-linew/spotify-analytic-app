@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/itemLayout"
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    android:orientation="horizontal"
     android:clickable="true"
     android:focusable="true"
+    android:orientation="horizontal"
     android:padding="8dp">
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -16,7 +17,8 @@
         android:adjustViewBounds="true"
         android:clickable="false"
         android:minWidth="100dp"
-        android:src="@drawable/test" />
+        android:src="@drawable/test"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,12 +35,14 @@
             android:layout_height="wrap_content"
             android:clickable="false"
             android:gravity="start"
-            android:lines="1"
+            android:singleLine="true"
             android:text="@string/testTitle" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/artistTextView"
                 style="@style/TextAppearance.MaterialComponents.Subtitle1"
@@ -47,18 +51,18 @@
                 android:layout_weight="1"
                 android:clickable="false"
                 android:gravity="start|center"
-                android:lines="1"
+                android:singleLine="true"
                 android:text="@string/testArtist" />
+
+
+
             <Button
                 android:id="@+id/likeButton"
                 style="?attr/materialIconButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:drawableEnd="@drawable/baseline_favorite_border_24"
-                />
+                android:drawableEnd="@drawable/baseline_favorite_border_24" />
         </LinearLayout>
-
-
 
 
     </LinearLayout>

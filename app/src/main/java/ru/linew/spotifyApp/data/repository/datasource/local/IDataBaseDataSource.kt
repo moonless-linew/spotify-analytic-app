@@ -8,4 +8,6 @@ interface IDataBaseDataSource {
     fun insertTrack(trackEntity: TrackEntity): Completable
     fun getAllTracks(): Single<List<TrackEntity>>
     fun getCountOfRequestedTrack(trackEntity: TrackEntity): Single<Int>
+
+    fun deleteTrack(trackEntity: TrackEntity): Completable
 }

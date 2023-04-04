@@ -1,9 +1,6 @@
 package ru.linew.spotifyApp.data.room
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import ru.linew.spotifyApp.data.models.room.TrackEntity
@@ -20,5 +17,6 @@ interface TracksDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertTrack(trackEntity: TrackEntity): Completable
 
-
+    @Delete
+    fun deleteTrack(trackEntity: TrackEntity): Completable
 }

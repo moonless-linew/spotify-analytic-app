@@ -2,6 +2,7 @@ package ru.linew.spotifyApp.ui.feature.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
@@ -11,7 +12,8 @@ import ru.linew.spotifyApp.databinding.TrackItemBinding
 import ru.linew.spotifyApp.ui.models.core.Track
 
 class PagingSearchAdapter(
-    private val addItemCallback: (Track) -> Unit,
+    private val likeItemCallback: (Track) -> Unit,
+    private val unLikeItemCallback: (Track) -> Unit,
     private val trackInfoCallback: (Track) -> Unit
 ) :
     PagingDataAdapter<Track, PagingSearchAdapter.TrackViewHolder>(SearchItemCallback()) {
@@ -28,7 +30,7 @@ class PagingSearchAdapter(
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         getItem(position)?.let {
-            holder.bind(it, addItemCallback, trackInfoCallback)
+            holder.bind(it, likeItemCallback, unLikeItemCallback, trackInfoCallback)
         }
     }
 
@@ -36,8 +38,9 @@ class PagingSearchAdapter(
     class TrackViewHolder(private val binding: TrackItemBinding) : ViewHolder(binding.root) {
         fun bind(
             track: Track,
-            addItemCallback: (Track) -> Unit,
-            trackInfoCallback: (Track) -> Unit
+            likeItemCallback: (Track) -> Unit,
+            unLikeItemCallback: (Track) -> Unit,
+            trackInfoCallback: (Track) -> Unit,
         ) {
             val progressIndicator = CircularProgressDrawable(binding.iconImageView.context).apply {
                 setColorSchemeColors(binding.root.context.getColor(R.color.purple_200))
@@ -51,29 +54,48 @@ class PagingSearchAdapter(
                     .into(binding.iconImageView)
                 nameTextView.text = track.name
                 artistTextView.text = track.artist
+
                 likeButton.setOnClickListener {
-                    addItemCallback(track)
+                    if (track.isLiked) {
+                        track.isLiked = false
+                        setDislikeIcon(likeButton)
+                        unLikeItemCallback(track)
+                        //delete
+                    } else {
+                        track.isLiked = true
+                        setLikeIcon(likeButton)
+                        likeItemCallback(track)
+                        //add
+                    }
+
                 }
                 itemLayout.setOnClickListener {
                     trackInfoCallback(track)
                 }
                 if (track.isLiked) {
-                    likeButton.setCompoundDrawablesWithIntrinsicBounds(
-                        0,
-                        0,
-                        R.drawable.baseline_favorite_24,
-                        0
-                    )
+                    setLikeIcon(likeButton)
                 } else {
-                    likeButton.setCompoundDrawablesWithIntrinsicBounds(
-                        0,
-                        0,
-                        R.drawable.baseline_favorite_border_24,
-                        0
-                    )
+                    setDislikeIcon(likeButton)
                 }
             }
         }
 
+        private fun setLikeIcon(likeButton: Button) {
+            likeButton.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                R.drawable.baseline_favorite_24,
+                0
+            )
+        }
+
+        private fun setDislikeIcon(likeButton: Button) {
+            likeButton.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                R.drawable.baseline_favorite_border_24,
+                0
+            )
+        }
     }
 }

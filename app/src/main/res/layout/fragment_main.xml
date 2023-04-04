@@ -21,7 +21,7 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         app:menu="@menu/bottom_menu"
         android:id="@+id/bottomSheet"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:labelVisibilityMode="selected"/>
 

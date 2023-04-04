@@ -1,6 +1,8 @@
 package ru.linew.spotifyApp.data.repository
 
-import androidx.paging.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import androidx.paging.rxjava3.flowable
 import androidx.paging.rxjava3.mapAsync
 import io.reactivex.rxjava3.core.Completable
@@ -27,7 +29,6 @@ class SpotifyRepository @Inject constructor(
     private val dataBaseDataSource: DataBaseDataSource
 ) :
     ISpotifyRepository {
-
     override fun getSearchPagesByString(searchString: String): Flowable<PagingData<Track>> {
         val pagingConfig = PagingConfig(
             pageSize = PagingConfigValues.LIMIT,
@@ -82,6 +83,11 @@ class SpotifyRepository @Inject constructor(
 
     override fun saveTrackToLocalStorage(track: Track): Completable {
         return dataBaseDataSource.insertTrack(
+            track.toDataBaseEntity()
+        )
+    }
+    override fun deleteTrackFromLocalStorage(track: Track): Completable{
+        return dataBaseDataSource.deleteTrack(
             track.toDataBaseEntity()
         )
     }

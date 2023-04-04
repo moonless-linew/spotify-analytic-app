@@ -12,5 +12,6 @@ interface ISpotifyRepository {
     fun getSearchPagesByString(searchString: String): Flowable<PagingData<Track>>
     fun saveTrackToLocalStorage(track: Track): Completable
     fun loadTracksFromLocalStorage(): Single<List<Track>>
+    fun deleteTrackFromLocalStorage(track: Track): Completable
     fun getTrackAnalysis(track: Track): Single<TrackAnalysis>
 }

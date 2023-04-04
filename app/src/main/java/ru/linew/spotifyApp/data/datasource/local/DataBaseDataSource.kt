@@ -22,4 +22,8 @@ class DataBaseDataSource @Inject constructor (
     override fun getCountOfRequestedTrack(trackEntity: TrackEntity): Single<Int>{
         return room.getCountOfRequestedTrackId(trackEntity.id)
     }
+
+    override fun deleteTrack(trackEntity: TrackEntity): Completable {
+        return room.deleteTrack(trackEntity)
+    }
 }
