@@ -1,4 +1,4 @@
-package ru.linew.spotifyApp.ui.feature.search
+package ru.linew.spotifyApp.ui.feature.search.recycler.tracks
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -60,12 +60,10 @@ class PagingSearchAdapter(
                         track.isLiked = false
                         setDislikeIcon(likeButton)
                         unLikeItemCallback(track)
-                        //delete
                     } else {
                         track.isLiked = true
                         setLikeIcon(likeButton)
                         likeItemCallback(track)
-                        //add
                     }
 
                 }

@@ -1,4 +1,4 @@
-package ru.linew.spotifyApp.ui.feature.search
+package ru.linew.spotifyApp.ui.feature.search.recycler.tracks
 
 import androidx.recyclerview.widget.DiffUtil
 import ru.linew.spotifyApp.ui.models.core.Track

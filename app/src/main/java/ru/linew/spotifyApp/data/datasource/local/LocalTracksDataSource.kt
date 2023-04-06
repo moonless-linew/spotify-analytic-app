@@ -3,13 +3,13 @@ package ru.linew.spotifyApp.data.datasource.local
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import ru.linew.spotifyApp.data.models.room.TrackEntity
-import ru.linew.spotifyApp.data.repository.datasource.local.IDataBaseDataSource
+import ru.linew.spotifyApp.data.repository.datasource.local.ILocalTracksDataSource
 import ru.linew.spotifyApp.data.room.TracksDao
 import javax.inject.Inject
 
-class DataBaseDataSource @Inject constructor (
+class LocalTracksDataSource @Inject constructor (
     private val room: TracksDao
-        ): IDataBaseDataSource {
+        ): ILocalTracksDataSource {
 
     override fun insertTrack(trackEntity: TrackEntity): Completable {
         return room.insertTrack(trackEntity)

@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
+import ru.linew.spotifyApp.ui.models.core.SearchQuery
 import ru.linew.spotifyApp.ui.models.core.Track
 import ru.linew.spotifyApp.ui.models.core.TrackAnalysis
 
@@ -14,4 +15,8 @@ interface ISpotifyRepository {
     fun loadTracksFromLocalStorage(): Single<List<Track>>
     fun deleteTrackFromLocalStorage(track: Track): Completable
     fun getTrackAnalysis(track: Track): Single<TrackAnalysis>
+
+    fun saveHistoryQueryToLocalStorage(query: SearchQuery): Completable
+    fun loadHistoryQueriesFromLocalStorage(): Single<List<SearchQuery>>
+    fun deleteHistoryQueryFromLocalStorage(query: SearchQuery): Completable
 }

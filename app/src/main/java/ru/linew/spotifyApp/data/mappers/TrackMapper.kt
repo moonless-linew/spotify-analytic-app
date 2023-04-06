@@ -3,11 +3,11 @@ package ru.linew.spotifyApp.data.mappers
 import ru.linew.spotifyApp.data.models.room.TrackEntity
 import ru.linew.spotifyApp.ui.models.core.Track
 
-fun Track.toDataBaseEntity(): TrackEntity{
+fun Track.toTrackEntity(): TrackEntity{
     return TrackEntity(
-        this.id,
-        this.name,
-        this.artist,
-        this.imageUrl
+        id = id,
+        name = name,
+        artist = artist,
+        imageUrl = imageUrl
     )
 }

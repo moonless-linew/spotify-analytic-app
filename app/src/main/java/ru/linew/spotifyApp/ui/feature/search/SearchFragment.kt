@@ -13,8 +13,12 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import ru.linew.spotifyApp.R
 import ru.linew.spotifyApp.databinding.FragmentSearchBinding
 import ru.linew.spotifyApp.ui.appComponent
+import ru.linew.spotifyApp.ui.feature.search.recycler.query.SearchQueryHistoryAdapter
+import ru.linew.spotifyApp.ui.feature.search.recycler.tracks.PagingSearchAdapter
+import ru.linew.spotifyApp.ui.models.core.SearchQuery
 import ru.linew.spotifyApp.ui.models.core.Track
 import ru.linew.spotifyApp.ui.models.state.SearchPageState
+import ru.linew.spotifyApp.ui.models.state.SearchQueryState
 import ru.linew.spotifyApp.ui.showErrorToast
 import java.net.UnknownHostException
 
@@ -28,7 +32,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         )
     }
     private lateinit var searchAdapter: PagingSearchAdapter
-
+    private lateinit var queriesAdapter: SearchQueryHistoryAdapter
 
     private val likeTrackCallback: (Track) -> Unit = { track ->
         viewModel.likeTrack(track)
@@ -39,14 +43,26 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         vibrateForAction()
     }
 
-
     private val trackInfoCallback: (Track) -> Unit = { track ->
         InfoDialog(requireContext())(track)
     }
 
+    private val openQuery: (SearchQuery) -> Unit = {query ->
+        setTextToSearchBar(query.query)
+    }
+
+    private val deleteQuery: (SearchQuery) -> Unit = { query ->
+        viewModel.deleteQueryItem(query)
+
+    }
+
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupSearchRecyclerView()
+        setupQueriesHistoryRecyclerView()
+        setupQueryHistoryObserver()
         setupPageStateObserver()
         setupSearchEditText()
 
@@ -73,8 +89,10 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         binding.searchResultList.setHasFixedSize(true)
     }
 
-    private fun setupHistoryRecyclerView() {
-
+    private fun setupQueriesHistoryRecyclerView() {
+        queriesAdapter = SearchQueryHistoryAdapter(deleteQueryCallback = deleteQuery, openQueryCallback = openQuery)
+        binding.queryHistoryList.adapter = queriesAdapter
+        viewModel.loadQueryHistory()
     }
 
     private fun vibrateForAction() {
@@ -87,16 +105,19 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private fun setupSearchEditText() {
 
         binding.searchInput.editText.setOnEditorActionListener { v, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                val a = v.text.toString()
-                binding.searchInput.hide()
-                binding.searchBar.text = a
-                viewModel.searchTracks(v.text.toString())
+            if (actionId == EditorInfo.IME_ACTION_SEARCH && v.text.isNotEmpty()) {
+                setTextToSearchBar(v.text.toString())
             }
             return@setOnEditorActionListener true
         }
 
 
+    }
+    private fun setTextToSearchBar(text: String){
+        binding.searchInput.hide()
+        binding.searchBar.text = text
+        viewModel.searchTracks(text)
+        viewModel.addQueryItem(SearchQuery(text))
     }
 
 
@@ -110,6 +131,16 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                     searchAdapter.submitData(lifecycle = lifecycle, it.data)
                 }
                 else -> {} //nothing
+            }
+        }
+    }
+
+    private fun setupQueryHistoryObserver(){
+        viewModel.queriesHistoryState.observe(viewLifecycleOwner){
+            when(it){
+                is SearchQueryState.Error -> showErrorToast("Error")
+                is SearchQueryState.Success -> queriesAdapter.submitList(it.data)
+                else -> {}
             }
         }
     }

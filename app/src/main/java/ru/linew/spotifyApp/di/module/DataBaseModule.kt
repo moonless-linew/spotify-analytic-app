@@ -5,6 +5,7 @@ import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import ru.linew.spotifyApp.data.room.AppDataBase
+import ru.linew.spotifyApp.data.room.SearchHistoryDao
 import ru.linew.spotifyApp.data.room.TracksDao
 import javax.inject.Singleton
 
@@ -13,9 +14,21 @@ object DataBaseModule {
 
     @Singleton
     @Provides
-    fun provideRoomDataBase(context: Context): TracksDao{
+    fun provideTracksDao(database: AppDataBase): TracksDao{
+        return database.tracksDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideSearchHistoryDao(database: AppDataBase): SearchHistoryDao{
+        return database.searchHistoryDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideDataBase(context: Context): AppDataBase{
         return Room.databaseBuilder(context,
-        AppDataBase::class.java,
-        "tracks").build().tracksDao()
+            AppDataBase::class.java,
+            "app").build()
     }
 }

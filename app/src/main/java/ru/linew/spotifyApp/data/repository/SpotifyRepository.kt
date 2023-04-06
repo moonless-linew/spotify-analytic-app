@@ -9,13 +9,17 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
-import ru.linew.spotifyApp.data.datasource.local.DataBaseDataSource
+import ru.linew.spotifyApp.data.datasource.local.LocalTracksDataSource
+import ru.linew.spotifyApp.data.datasource.local.SearchHistoryDataSource
 import ru.linew.spotifyApp.data.datasource.remote.SearchPagingSource
 import ru.linew.spotifyApp.data.datasource.remote.SpotifyDataSource
 import ru.linew.spotifyApp.data.mappers.toDataBaseEntity
+import ru.linew.spotifyApp.data.mappers.toSearchQueryEntity
+import ru.linew.spotifyApp.data.mappers.toTrackEntity
 import ru.linew.spotifyApp.data.mappers.toUiLayer
 import ru.linew.spotifyApp.data.models.retrofit.auth.Token
 import ru.linew.spotifyApp.data.utils.PagingConfigValues
+import ru.linew.spotifyApp.ui.models.core.SearchQuery
 import ru.linew.spotifyApp.ui.models.core.Track
 import ru.linew.spotifyApp.ui.models.core.TrackAnalysis
 import ru.linew.spotifyApp.ui.repository.ISpotifyRepository
@@ -26,7 +30,8 @@ class SpotifyRepository @Inject constructor(
     private val searchPagingSourceFactory: SearchPagingSource.SearchPagingSourceFactory,
     private val tokenRepository: ITokenRepository,
     private val spotifyDataSource: SpotifyDataSource.SpotifyDataSourceFactory,
-    private val dataBaseDataSource: DataBaseDataSource
+    private val localTracksDataSource: LocalTracksDataSource,
+    private val searchHistoryDataSource: SearchHistoryDataSource
 ) :
     ISpotifyRepository {
     override fun getSearchPagesByString(searchString: String): Flowable<PagingData<Track>> {
@@ -56,7 +61,7 @@ class SpotifyRepository @Inject constructor(
             }
             .map { pagingData ->
                 pagingData.mapAsync {trackResponse ->
-                    dataBaseDataSource.getCountOfRequestedTrack(trackResponse.toDataBaseEntity())
+                    localTracksDataSource.getCountOfRequestedTrack(trackResponse.toDataBaseEntity())
                         .subscribeOn(Schedulers.io())
                         .map {
                             trackResponse.toUiLayer().apply {
@@ -64,8 +69,6 @@ class SpotifyRepository @Inject constructor(
                             }
                         }
                 }
-
-
             }
     }
 
@@ -81,25 +84,43 @@ class SpotifyRepository @Inject constructor(
 
     }
 
+    override fun saveHistoryQueryToLocalStorage(query: SearchQuery): Completable {
+        return searchHistoryDataSource.insertSearchQuery(query = query.toSearchQueryEntity())
+    }
+
+    override fun loadHistoryQueriesFromLocalStorage(): Single<List<SearchQuery>> {
+        return searchHistoryDataSource
+            .getHistory()
+            .map {
+                it.map {item -> item.toUiLayer()}
+            }
+    }
+
+    override fun deleteHistoryQueryFromLocalStorage(query: SearchQuery): Completable {
+        return searchHistoryDataSource.deleteSearchQuery(query = query.toSearchQueryEntity())
+    }
+
     override fun saveTrackToLocalStorage(track: Track): Completable {
-        return dataBaseDataSource.insertTrack(
-            track.toDataBaseEntity()
+        return localTracksDataSource.insertTrack(
+            track.toTrackEntity()
         )
     }
     override fun deleteTrackFromLocalStorage(track: Track): Completable{
-        return dataBaseDataSource.deleteTrack(
-            track.toDataBaseEntity()
+        return localTracksDataSource.deleteTrack(
+            track.toTrackEntity()
         )
     }
 
     override fun loadTracksFromLocalStorage(): Single<List<Track>> {
-        return dataBaseDataSource.getAllTracks()
+        return localTracksDataSource.getAllTracks()
             .map {
                 it.map { item -> item.toUiLayer().apply {
                     isLiked = true
                 } }
             }
     }
+
+
 
 
 }

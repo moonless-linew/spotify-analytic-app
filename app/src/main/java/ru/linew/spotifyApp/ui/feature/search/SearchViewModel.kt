@@ -4,13 +4,13 @@ import androidx.lifecycle.*
 import androidx.paging.rxjava3.cachedIn
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import ru.linew.spotifyApp.ui.models.core.SearchQuery
 import ru.linew.spotifyApp.ui.models.core.Track
-import ru.linew.spotifyApp.ui.models.state.AnalysisTrackState
 import ru.linew.spotifyApp.ui.models.state.SearchPageState
+import ru.linew.spotifyApp.ui.models.state.SearchQueryState
 import ru.linew.spotifyApp.ui.repository.ISpotifyRepository
 
 
@@ -35,10 +35,9 @@ class SearchViewModel @AssistedInject constructor(
     val searchPageState: LiveData<SearchPageState>
         get() = _searchPageState
 
-    private val _analysisTrackState = MutableLiveData<AnalysisTrackState>(AnalysisTrackState.Null)
-    val analysisTrackState: LiveData<AnalysisTrackState>
-        get() = _analysisTrackState
-
+    private val _queriesHistoryState = MutableLiveData<SearchQueryState>(SearchQueryState.Null)
+    val queriesHistoryState: LiveData<SearchQueryState>
+        get() = _queriesHistoryState
 
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -51,19 +50,21 @@ class SearchViewModel @AssistedInject constructor(
                 _searchPageState.postValue(SearchPageState.Success(it))
             },
                 {
-                _searchPageState.postValue(SearchPageState.Error(it))
+                    _searchPageState.postValue(SearchPageState.Error(it))
                 }
             ))
 
     }
 
-    fun likeTrack(track: Track){
+    fun likeTrack(track: Track) {
         disposeBag.add(
-        spotifyRepository.saveTrackToLocalStorage(track)
-            .subscribeOn(Schedulers.io())
-            .subscribe())
+            spotifyRepository.saveTrackToLocalStorage(track)
+                .subscribeOn(Schedulers.io())
+                .subscribe()
+        )
     }
-    fun unLikeTrack(track: Track){
+
+    fun unLikeTrack(track: Track) {
         disposeBag.add(
             spotifyRepository.deleteTrackFromLocalStorage(track)
                 .subscribeOn(Schedulers.io())
@@ -71,17 +72,46 @@ class SearchViewModel @AssistedInject constructor(
         )
     }
 
-    fun analysisTrack(track: Track){
-        _analysisTrackState.postValue(AnalysisTrackState.Loading)
+    fun loadQueryHistory() {
+        _queriesHistoryState.postValue(SearchQueryState.Loading)
         disposeBag.add(
-        spotifyRepository.getTrackAnalysis(track = track)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                _analysisTrackState.postValue(AnalysisTrackState.Success(it))
-            },{
-                _analysisTrackState.postValue(AnalysisTrackState.Error(it))
-            }))
+            spotifyRepository
+                .loadHistoryQueriesFromLocalStorage()
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    _queriesHistoryState.postValue(SearchQueryState.Success(it))
+                }, {
+                    _queriesHistoryState.postValue(SearchQueryState.Error(it))
+                })
+        )
+    }
+
+    fun deleteQueryItem(query: SearchQuery) {
+        _queriesHistoryState.postValue(SearchQueryState.Loading)
+        disposeBag.add(
+            spotifyRepository
+                .deleteHistoryQueryFromLocalStorage(query)
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    loadQueryHistory()
+                }, {
+                    _queriesHistoryState.postValue(SearchQueryState.Error(it))
+                })
+        )
+    }
+
+    fun addQueryItem(query: SearchQuery) {
+        _queriesHistoryState.postValue(SearchQueryState.Loading)
+        disposeBag.add(
+            spotifyRepository
+                .saveHistoryQueryToLocalStorage(query)
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    loadQueryHistory()
+                }, {
+                    _queriesHistoryState.postValue(SearchQueryState.Error(it))
+                })
+        )
     }
 
 

@@ -5,6 +5,9 @@ import ru.linew.spotifyApp.ui.models.core.Track
 
 fun TrackEntity.toUiLayer(): Track {
     return Track(
-        this.id, this.name, this.artist, this.imageUrl
+        id = id,
+        name = name,
+        artist = artist,
+        imageUrl = imageUrl
     )
 }

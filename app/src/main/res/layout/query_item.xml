@@ -6,12 +6,12 @@
     <com.google.android.material.imageview.ShapeableImageView
         android:layout_width="50dp"
         android:src="@drawable/baseline_history_24"
-        android:padding="8dp"
+        android:padding="12dp"
         android:tint="@color/grey"
         android:layout_height="match_parent"
         />
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/historyText"
+        android:id="@+id/queryText"
         android:layout_weight="1"
         android:layout_width="0dp"
         style="@style/TextAppearance.Material3.TitleSmall"
